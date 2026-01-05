@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "A cli to retrieve and grow RSS feeds"
 authors = ["Maker By Night <2565361+mshafer1@users.noreply.github.com>"]
 license = "MIT"
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
