@@ -1,0 +1,49 @@
+name: Pull feeds and publish
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # weekly at 00:00 on Sunday -> https://crontab.guru/#0_0_*_*_0
+  push:
+    branches:
+      - 'main'
+    paths:
+      - '**/*'
+      - '!docs'
+  workflow_dispatch:
+
+
+jobs:
+  build_and_commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: ./tools/rss_retriever # Sets the default CWD for all 'run' steps in this job
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ni/python-actions/setup-python@v0
+      - uses: ni/python-actions/setup-poetry@v0
+      - run: poetry install -v
+      - name: cache feed data
+        id: cache-feeds
+        uses: actions/cache@v4
+        with:
+          path: ~/cache-feeds
+          key: ${{ runner.os }}-cache-feeds
+      - name: Build feeds
+        run: >
+          poetry run python -m rss_retriever 
+          --feed "https://www.youtube.com/feeds/videos.xml?channel_id=UCea_GJg5QGvycBOrYjjkMJg"
+          --output-json --items-path feed/entry 
+          --cache-dir ~/cache-feeds
+          --out-dir ../../docs
+      - name: Check for changes and commit/push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add -a "$GITHUB_WORKSPACE/docs"
+          git diff --cached --exit-code --quiet || {
+            git commit -m "Automated update (CI)"
+            git push
+          }
