@@ -38,6 +38,11 @@ jobs:
           --output-json --items-path feed/entry 
           --cache-dir ~/cache-feeds
           --out-dir ../../docs
+      - name: Store Cache dir as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: feeds-cache
+          path: ~/cache-feeds/
       - name: Check for changes and commit/push
         run: |
           git config user.name "GitHub Actions"
