@@ -25,7 +25,7 @@ def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pa
     items = working_point.get(list_path[-1], [])
     with _datastore.DataStore(name, cache_path=cache_dir) as store:
         stored_working_point = store
-        print("Retriving stored items from cache under:", '/'.join(list_path))
+        print("Retrieving stored items from cache under:", '/'.join(list_path))
         for key in list_path[:-1]:
             stored_working_point = stored_working_point.get(key, {})
         stored_items = stored_working_point.get(list_path[-1], [])
