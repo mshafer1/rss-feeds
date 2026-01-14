@@ -35,13 +35,13 @@ jobs:
         run: >
           poetry run python -m rss_retriever 
           --feed "https://www.youtube.com/feeds/videos.xml?channel_id=UCea_GJg5QGvycBOrYjjkMJg"
-          --output-json --items-path feed/entry 
+          --output-json --items-path feed/entry --item-id-key id
           --cache-dir ~/cache-feeds
           --out-dir ../../docs;
           
           poetry run python -m rss_retriever 
           --feed "https://anchor.fm/s/d5a0c50/podcast/rss"
-          --output-json --items-path rss/channel/item
+          --output-json --items-path rss/channel/item --item-id-key link
           --cache-dir ~/cache-feeds
           --out-dir ../../docs
       - name: Store Cache dir as artifact
