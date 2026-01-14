@@ -17,7 +17,7 @@ def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pa
     # - since both are sorted newest to oldest, we can just prepend new items until we hit an old one
     name = markupsafe.escape(re.sub(r"[^a-zA-Z0-9\.]", "_", uri))
 
-    list_path = items_path
+    list_path = items_path.split("/")
 
     working_point = data
     for key in list_path[:-1]:
