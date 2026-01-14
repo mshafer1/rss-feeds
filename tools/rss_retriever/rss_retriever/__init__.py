@@ -25,9 +25,11 @@ def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pa
     items = working_point.get(list_path[-1], [])
     with _datastore.DataStore(name, cache_path=cache_dir) as store:
         stored_working_point = store
+        print("Retriving stored items from cache under:", '/'.join(list_path))
         for key in list_path[:-1]:
             stored_working_point = stored_working_point.get(key, {})
         stored_items = stored_working_point.get(list_path[-1], [])
+        print(f"Has {len(stored_items)} items previously stored")
         # special case, if items is one, make it a list
         if isinstance(items, dict):
             items = [items]
@@ -37,10 +39,13 @@ def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pa
         else:
             newest_old_items = stored_items[0]
             all_items = []
-            for item in items:
+            for i, item in enumerate(items):
                 if item == newest_old_items:
+                    print("Found duplicate at new item index", i)
                     break
+                print("Adding new item from index", i)
                 all_items.append(item)
+            print("Appending", len(stored_items), "item(s)")
             all_items.extend(stored_items)
 
         # enforce max size
