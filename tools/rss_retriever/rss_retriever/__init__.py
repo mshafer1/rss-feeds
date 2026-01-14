@@ -9,7 +9,15 @@ import xmltodict
 
 from rss_retriever import _datastore
 
-def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pathlib.Path, max_size: int=-1, item_id_key: typing.Optional[str]=None) -> dict:
+
+def _merge_data_with_stored(
+    data: dict,
+    uri: str,
+    items_path: str,
+    cache_dir: pathlib.Path,
+    max_size: int = -1,
+    item_id_key: typing.Optional[str] = None,
+) -> dict:
     # assumptions:
     # - new data is sorted newest to oldest
     # - old data is sorted newest to oldest
@@ -25,7 +33,7 @@ def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pa
     items = working_point.get(list_path[-1], [])
     with _datastore.DataStore(name, cache_path=cache_dir) as store:
         stored_working_point = store
-        print("Retrieving stored items from cache under:", '/'.join(list_path))
+        print("Retrieving stored items from cache under:", "/".join(list_path))
         for key in list_path[:-1]:
             stored_working_point = stored_working_point.get(key, {})
         stored_items = stored_working_point.get(list_path[-1], [])
@@ -64,7 +72,15 @@ def _merge_data_with_stored(data: dict, uri: str, items_path: str, cache_dir: pa
         stored_working_point[list_path[-1]] = all_items
     return store
 
-def fetch_feed(uri: str, items_path: str, return_json: bool = False, cache_dir: typing.Optional[pathlib.Path]=None, max_size: int=-1, item_id_key: typing.Optional[str]=None):
+
+def fetch_feed(
+    uri: str,
+    items_path: str,
+    return_json: bool = False,
+    cache_dir: typing.Optional[pathlib.Path] = None,
+    max_size: int = -1,
+    item_id_key: typing.Optional[str] = None,
+):
     r = requests.get(uri, timeout=10)
     r.raise_for_status()
     data = r.text
@@ -72,7 +88,14 @@ def fetch_feed(uri: str, items_path: str, return_json: bool = False, cache_dir: 
     cache_dir = cache_dir or pathlib.Path.cwd()
 
     converted_data = xmltodict.parse(data)
-    converted_data = _merge_data_with_stored(converted_data, uri, cache_dir=cache_dir, max_size=max_size, items_path=items_path, item_id_key=item_id_key)
+    converted_data = _merge_data_with_stored(
+        converted_data,
+        uri,
+        cache_dir=cache_dir,
+        max_size=max_size,
+        items_path=items_path,
+        item_id_key=item_id_key,
+    )
 
     if return_json:
         result = json.dumps(converted_data)

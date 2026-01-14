@@ -6,6 +6,7 @@ import logging
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
+
 class DataStore:
     def __init__(self, name: str, cache_path: pathlib.Path):
         self._data = None
